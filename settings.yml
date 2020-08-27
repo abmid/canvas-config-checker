@@ -1,0 +1,30 @@
+canvas:
+    path: /Applications/XAMPP/htdocs/canvas/umm-canvas-checklist/test/canvas
+
+database:
+    host: localhost
+    dbname: canvas_production
+    username: canvas
+    password: your_password
+
+domain:
+    url: domain.local
+    ssl: true
+    service_umm: integration.local
+    service_umm_secret: integration.secret
+
+filestore:
+    path_prefix: /tmp/development/files
+
+security:
+    encryption_key: encrypt-key123
+
+cache_store:
+    status: # status use cache_store or not [true, false]
+    cache_store: # redis, mem_cache
+    redis: 
+        server:
+        database:
+
+apache:
+    path_vhost: # full with file name
