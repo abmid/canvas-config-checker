@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestCanvasTestSuite(t *testing.T) {
+func TestCanvasTestSuiteDB(t *testing.T) {
 	suite.Run(t, new(CanvasTestSuite))
 }
 

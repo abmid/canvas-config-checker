@@ -1,7 +1,6 @@
 package canvas
 
 import (
-	"fmt"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -48,8 +47,9 @@ func (suite *CanvasTestSuite) TestCheckCanvas() {
 	viper.Set("canvas.path", suite.CanvasPath)
 
 	canvas := New(viper)
-	test := canvas.RunCanvas()
-	fmt.Print(test)
+	notEquals, err := canvas.RunCanvas()
+	suite.NoError(err)
+	suite.Nil(notEquals)
 }
 
 func (suite *CanvasTestSuite) TestCheckConfigEqual() {

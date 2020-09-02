@@ -1,9 +1,11 @@
 package canvas
 
 import (
+	"log"
 	"os"
 	"path"
 
+	"github.com/abmid/canvas-env-checker/internal/checker"
 	"github.com/abmid/canvas-env-checker/internal/message"
 	"github.com/spf13/viper"
 )
@@ -13,11 +15,9 @@ type CheckerCanvas struct {
 	CanvasPathConfig string
 	Database         CheckerCanvasDB     // see in database.go
 	Domain           CheckerCanvasDomain // see in domain.go
-}
-
-type CheckerNotEqual struct {
-	Group string
-	Name  string
+	FileStore        CheckerCanvasFS
+	Security         CheckerCanvasSec
+	Cache            CheckerCanvasCache
 }
 
 // New initial method CheckerCanvas
@@ -39,11 +39,31 @@ func New(viper *viper.Viper) *CheckerCanvas {
 		ServiceUmmSecret: viper.GetString("domain.integration_secret"),
 	}
 
+	fs := CheckerCanvasFS{
+		Storage:    viper.GetString("filestore.storage"),
+		PathPrefix: viper.GetString("filestore.path_prefix"),
+	}
+
+	sec := CheckerCanvasSec{
+		EncryptionKey: viper.GetString("security.encryption_key"),
+	}
+
+	cache := CheckerCanvasCache{
+		Status:     viper.GetBool("cache_store.status"),
+		CacheStore: viper.GetString("cache_store.cache_store"),
+		Redis: CanvasRedis{
+			Servers:  viper.GetStringSlice("cache_store.redis.server"),
+			Database: viper.GetInt("cache_store.redis.database")},
+	}
+
 	return &CheckerCanvas{
 		CanvasPath:       viper.GetString("canvas.path"),
 		CanvasPathConfig: canvasPathConfig,
 		Database:         database,
 		Domain:           domain,
+		FileStore:        fs,
+		Security:         sec,
+		Cache:            cache,
 	}
 }
 
@@ -56,14 +76,15 @@ func (c *CheckerCanvas) checkDir() (bool, error) {
 }
 
 // RunCanvas is function for Check Configuration Canvas
-func (c *CheckerCanvas) RunCanvas() (notEqual []CheckerNotEqual, err error) {
+func (c *CheckerCanvas) RunCanvas() (notEqual []checker.CheckerNotEqual, err error) {
 	m := message.New("Canvas")
 	m.Name = "Path"
 	m.Start()
 	isExist, err := c.checkDir()
 	if err != nil {
 		m.StopFailure(err.Error())
-		notEqual = append(notEqual, CheckerNotEqual{Group: "canvas", Name: "path:directory"})
+		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "canvas", Name: "path:directory"})
+		return notEqual, err
 	}
 	if isExist {
 		m.StopSuccess()
@@ -78,4 +99,54 @@ func (c *CheckerCanvas) CheckConfigEqual(execpted, actual string) bool {
 	}
 
 	return true
+}
+
+func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []checker.GroupError, err error) {
+
+	canvas := New(viper)
+
+	// Check Canvas
+	isEqual, err := canvas.RunCanvas()
+	if err != nil {
+		log.Fatalf(err.Error())
+		return notEqual, groupError, err
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	// Check DB
+	isEqual, err = canvas.RunDB()
+	if err != nil {
+		groupError = append(groupError, checker.GroupError{Group: "database", Message: err.Error()})
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	// Check Domain
+	isEqual, err = canvas.RunDomain()
+	if err != nil {
+		groupError = append(groupError, checker.GroupError{Group: "domain", Message: err.Error()})
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	// Check FileStore
+	isEqual, err = canvas.RunFS()
+	if err != nil {
+		groupError = append(groupError, checker.GroupError{Group: "file store", Message: err.Error()})
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	// Check Security
+	isEqual, err = canvas.RunSec()
+	if err != nil {
+		groupError = append(groupError, checker.GroupError{Group: "security", Message: err.Error()})
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	// Check Cache
+	isEqual, err = canvas.RunCache()
+	if err != nil {
+		groupError = append(groupError, checker.GroupError{Group: "cache", Message: err.Error()})
+	}
+	notEqual = append(notEqual, isEqual...)
+
+	return notEqual, groupError, nil
 }

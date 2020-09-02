@@ -5,34 +5,10 @@ import (
 	"log"
 
 	"github.com/abmid/canvas-env-checker/internal/message"
+	"github.com/abmid/canvas-env-checker/pkg/apache"
 	"github.com/abmid/canvas-env-checker/pkg/canvas"
 	"github.com/spf13/viper"
 )
-
-type NotEqual struct {
-	Group string
-}
-
-func Run(viper *viper.Viper) {
-	message.Banner()
-	notEqual := []NotEqual{}
-	canvas := canvas.New(viper)
-
-	isEqual, err := canvas.RunCanvas()
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	if len(isEqual) > 0 {
-		notEqual = append(notEqual, NotEqual{Group: "canvas"})
-	}
-
-	if len(notEqual) > 0 {
-		log.Fatalf("message")
-		// message not ready
-	} else {
-		message.Ready("Production")
-	}
-}
 
 func main() {
 	viper := viper.New()
@@ -43,5 +19,26 @@ func main() {
 	if err != nil {                 // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
-	Run(viper)
+
+	message.Banner()
+	canvasNotEquals, CanvasGroupErrors, err := canvas.Run(viper)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	apacheNotEquals, ApacheGroupErrors, err := apache.Run(viper)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	if len(canvasNotEquals) > 0 || len(CanvasGroupErrors) > 0 || len(apacheNotEquals) > 0 || len(ApacheGroupErrors) > 0 {
+		message.SummaryGroupError(CanvasGroupErrors)
+		message.SummaryNotEqual(canvasNotEquals)
+
+		message.SummaryGroupError(ApacheGroupErrors)
+		message.SummaryNotEqual(apacheNotEquals)
+	}
+
+	message.Ready("production")
+
 }

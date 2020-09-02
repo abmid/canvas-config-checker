@@ -3,8 +3,8 @@ package canvas
 import (
 	"io/ioutil"
 
+	"github.com/abmid/canvas-env-checker/internal/checker"
 	"github.com/abmid/canvas-env-checker/internal/message"
-	"github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -40,10 +40,13 @@ var (
 
 // GetCanvasConfig is function to get configuration database from Canvas
 func (c *CheckerCanvas) GetCanvasDBConfig() (*CanvasDBConfig, error) {
-
+	m := message.New("Canvas")
+	m.Name = "database file"
+	m.File = "database.yml"
+	m.StartGroup()
 	contentDB, err := ioutil.ReadFile(c.CanvasPathConfig + "/database.yml")
 	if err != nil {
-		logrus.Error(err)
+		m.StopFailureNotExists()
 		return nil, err
 	}
 
@@ -52,14 +55,15 @@ func (c *CheckerCanvas) GetCanvasDBConfig() (*CanvasDBConfig, error) {
 	err = yaml.Unmarshal(contentDB, &dbCanvasConfig)
 
 	if err != nil {
-		logrus.Error(err)
+		m.StopFailureNotExists()
 		return nil, err
 	}
 
+	m.StopSuccess()
 	return &dbCanvasConfig, nil
 }
 
-func (c *CheckerCanvas) RunDB() (notEqual []CheckerNotEqual, err error) {
+func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) {
 
 	canvasConfig, err := c.GetCanvasDBConfig()
 	if err != nil {
@@ -74,7 +78,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []CheckerNotEqual, err error) {
 		m.StopSuccess()
 	} else {
 		m.StopFailureNotEqual()
-		notEqual = append(notEqual, CheckerNotEqual{Group: "Canvas", Name: "database:name"})
+		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:name"})
 	}
 
 	m.Name = "database:host"
@@ -83,7 +87,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []CheckerNotEqual, err error) {
 		m.StopSuccess()
 	} else {
 		m.StopFailureNotEqual()
-		notEqual = append(notEqual, CheckerNotEqual{Group: "Canvas", Name: "database:host"})
+		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:host"})
 	}
 
 	m.Name = "database:username"
@@ -92,7 +96,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []CheckerNotEqual, err error) {
 		m.StopSuccess()
 	} else {
 		m.StopFailureNotEqual()
-		notEqual = append(notEqual, CheckerNotEqual{Group: "Canvas", Name: "database:username"})
+		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:username"})
 	}
 
 	m.Name = "database:password"
@@ -101,7 +105,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []CheckerNotEqual, err error) {
 		m.StopSuccess()
 	} else {
 		m.StopFailureNotEqual()
-		notEqual = append(notEqual, CheckerNotEqual{Group: "Canvas", Name: "database:password"})
+		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:password"})
 	}
 
 	return notEqual, nil
