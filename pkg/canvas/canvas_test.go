@@ -4,6 +4,7 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"testing"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
@@ -60,4 +61,8 @@ func (suite *CanvasTestSuite) TestCheckConfigEqual() {
 	canvas := New(viper)
 	status := canvas.CheckConfigEqual("true", "true")
 	suite.Assert().Equal(status, true)
+}
+
+func TestCanvasTestSuiteCache(t *testing.T) {
+	suite.Run(t, new(CanvasTestSuite))
 }

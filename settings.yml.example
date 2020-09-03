@@ -1,0 +1,33 @@
+canvas:
+    path: #your path canvas ex. /var/canvas
+
+database:
+    host: localhost
+    dbname: canvas_production
+    username: canvas
+    password: your_passwords
+
+domain:
+    url: canvas.example.coms
+    ssl: true
+    service_umm: integration.local
+    service_umm_secret: integration.secret
+
+filestore:
+    storage: local
+    path_prefix: tmp/files
+
+security:
+    encryption_key: 12345asd
+
+cache_store:
+    status: true # status use cache_store or not [true, false]
+    cache_store: redis_store # redis_store or mem_cache_store
+    redis: 
+        servers:
+            - redis://redis01
+        database: 2
+
+apache:
+    os: test # now just support ubuntu
+    vhost_name: canvas-prod.conf #canvas-production.conf

@@ -3,8 +3,8 @@ package canvas
 import (
 	"io/ioutil"
 
-	"github.com/abmid/canvas-env-checker/internal/checker"
-	"github.com/abmid/canvas-env-checker/internal/message"
+	"github.com/abmid/canvas-config-checker/internal/checker"
+	"github.com/abmid/canvas-config-checker/internal/message"
 	"github.com/fatih/color"
 	yaml "gopkg.in/yaml.v2"
 )

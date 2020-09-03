@@ -1,15 +1,8 @@
 package canvas
 
 import (
-	"testing"
-
 	"github.com/spf13/viper"
-	"github.com/stretchr/testify/suite"
 )
-
-func TestCanvasTestSuiteDB(t *testing.T) {
-	suite.Run(t, new(CanvasTestSuite))
-}
 
 func (suite *CanvasTestSuite) TestGetCanvasDBConfig() {
 	viper := viper.New()

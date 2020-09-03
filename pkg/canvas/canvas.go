@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/abmid/canvas-env-checker/internal/checker"
-	"github.com/abmid/canvas-env-checker/internal/message"
+	"github.com/abmid/canvas-config-checker/internal/checker"
+	"github.com/abmid/canvas-config-checker/internal/message"
 	"github.com/spf13/viper"
 )
 
@@ -116,35 +116,35 @@ func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []c
 	// Check DB
 	isEqual, err = canvas.RunDB()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "database", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "canvas", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 
 	// Check Domain
 	isEqual, err = canvas.RunDomain()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "domain", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "canvas", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 
 	// Check FileStore
 	isEqual, err = canvas.RunFS()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "file store", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "canvas", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 
 	// Check Security
 	isEqual, err = canvas.RunSec()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "security", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "canvas", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 
 	// Check Cache
 	isEqual, err = canvas.RunCache()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "cache", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "canvas", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 

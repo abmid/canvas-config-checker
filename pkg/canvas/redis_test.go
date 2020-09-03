@@ -1,15 +1,8 @@
 package canvas
 
 import (
-	"testing"
-
 	"github.com/spf13/viper"
-	"github.com/stretchr/testify/suite"
 )
-
-func TestSuiteRedis(t *testing.T) {
-	suite.Run(t, new(CanvasTestSuite))
-}
 
 func (suite *CanvasTestSuite) TestGetCanvasRedisConfig() {
 	viper := viper.New()

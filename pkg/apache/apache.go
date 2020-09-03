@@ -2,10 +2,9 @@ package apache
 
 import (
 	"io/ioutil"
-	"path"
 
-	"github.com/abmid/canvas-env-checker/internal/checker"
-	"github.com/abmid/canvas-env-checker/internal/message"
+	"github.com/abmid/canvas-config-checker/internal/checker"
+	"github.com/abmid/canvas-config-checker/internal/message"
 	"github.com/spf13/viper"
 )
 
@@ -20,7 +19,7 @@ func New(viper *viper.Viper) (*CheckerApache, error) {
 
 	switch viper.GetString("apache.os") {
 	case "test":
-		apachePath = path.Join("../../", "test/apache/site-enabled")
+		apachePath = viper.GetString("apache.path")
 	case "ubuntu":
 		apachePath = "/etc/apache2/site-enabled"
 	}
@@ -75,7 +74,7 @@ func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []c
 
 	isEqual, err := apache.RunVHost()
 	if err != nil {
-		groupError = append(groupError, checker.GroupError{Group: "file store", Message: err.Error()})
+		groupError = append(groupError, checker.GroupError{Group: "apache", Message: err.Error()})
 	}
 	notEqual = append(notEqual, isEqual...)
 
