@@ -27,7 +27,7 @@ type CanvasFSConfig struct {
 func (c *CheckerCanvas) GetCanvasFSConfig() (*CanvasFSConfig, error) {
 
 	m := message.New("Canvas")
-	m.Name = "file store file"
+	m.Name = "file_store file"
 	m.File = "file_store.yml"
 	m.StartGroup()
 	contentDB, err := ioutil.ReadFile(c.CanvasPathConfig + "/file_store.yml")
@@ -49,8 +49,9 @@ func (c *CheckerCanvas) GetCanvasFSConfig() (*CanvasFSConfig, error) {
 	return &fsCanvasConfig, nil
 }
 
+// RunFS function for check configuration between file_store(settings.yml) and canvas file_store
 func (c *CheckerCanvas) RunFS() (notEqual []checker.CheckerNotEqual, err error) {
-
+	// Get Canvas Configuration
 	fsCanvasConfig, err := c.GetCanvasFSConfig()
 	if err != nil {
 		return nil, err
@@ -58,6 +59,7 @@ func (c *CheckerCanvas) RunFS() (notEqual []checker.CheckerNotEqual, err error) 
 
 	m := message.New("Canvas")
 
+	// Check file_store storage
 	m.Name = "file_store:storage"
 	m.Start()
 	if c.CheckConfigEqual(c.FileStore.Storage, fsCanvasConfig.Production.Storage) {
@@ -67,6 +69,7 @@ func (c *CheckerCanvas) RunFS() (notEqual []checker.CheckerNotEqual, err error) 
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: m.Name})
 	}
 
+	// Check file_store path_prefix
 	m.Name = "file_store:path_prefix"
 	m.Start()
 	if c.CheckConfigEqual(c.FileStore.PathPrefix, fsCanvasConfig.Production.PathPrefix) {

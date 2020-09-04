@@ -63,6 +63,7 @@ func (c *CheckerCanvas) GetCanvasDBConfig() (*CanvasDBConfig, error) {
 	return &dbCanvasConfig, nil
 }
 
+// RunDB function for check configuration settings.yml about database and canvas
 func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) {
 
 	canvasConfig, err := c.GetCanvasDBConfig()
@@ -72,6 +73,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) 
 
 	m := message.New("Canvas")
 
+	// Check Database Name
 	m.Name = "database:name"
 	m.Start()
 	if c.CheckConfigEqual(c.Database.DBName, canvasConfig.Production.Database) {
@@ -81,6 +83,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) 
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:name"})
 	}
 
+	// Check Database Host
 	m.Name = "database:host"
 	m.Start()
 	if c.CheckConfigEqual(c.Database.Host, canvasConfig.Production.Host) {
@@ -90,6 +93,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) 
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:host"})
 	}
 
+	// Check Database Username
 	m.Name = "database:username"
 	m.Start()
 	if c.CheckConfigEqual(c.Database.Username, canvasConfig.Production.Username) {
@@ -99,6 +103,7 @@ func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) 
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: "database:username"})
 	}
 
+	// Check Database Password
 	m.Name = "database:password"
 	m.Start()
 	if c.CheckConfigEqual(c.Database.Password, canvasConfig.Production.Password) {
@@ -110,11 +115,3 @@ func (c *CheckerCanvas) RunDB() (notEqual []checker.CheckerNotEqual, err error) 
 
 	return notEqual, nil
 }
-
-// Architecture app
-
-// canvas := canvas.New(viper)
-// canvas.RunDB()
-// canvas.RunDomain()
-// canvas.RunFileStore()
-// canvas.RunSecurity()

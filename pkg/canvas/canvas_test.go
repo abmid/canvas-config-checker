@@ -43,24 +43,28 @@ func (suite *CanvasTestSuite) TestCheckDir() {
 }
 
 func (suite *CanvasTestSuite) TestCheckCanvas() {
-	viper := viper.New()
-	viper.SetConfigType("yaml")
-	viper.Set("canvas.path", suite.CanvasPath)
+	suite.Run("equal", func() {
+		viper := viper.New()
+		viper.SetConfigType("yaml")
+		viper.Set("canvas.path", suite.CanvasPath)
 
-	canvas := New(viper)
-	notEquals, err := canvas.RunCanvas()
-	suite.NoError(err)
-	suite.Nil(notEquals)
+		canvas := New(viper)
+		notEquals, err := canvas.RunCanvas()
+		suite.NoError(err)
+		suite.Nil(notEquals)
+	})
 }
 
 func (suite *CanvasTestSuite) TestCheckConfigEqual() {
-	viper := viper.New()
-	viper.SetConfigType("yaml")
-	viper.Set("canvas.path", suite.CanvasPath)
+	suite.Run("equal", func() {
+		viper := viper.New()
+		viper.SetConfigType("yaml")
+		viper.Set("canvas.path", suite.CanvasPath)
 
-	canvas := New(viper)
-	status := canvas.CheckConfigEqual("true", "true")
-	suite.Assert().Equal(status, true)
+		canvas := New(viper)
+		status := canvas.CheckConfigEqual("true", "true")
+		suite.Assert().Equal(status, true)
+	})
 }
 
 func TestCanvasTestSuiteCache(t *testing.T) {

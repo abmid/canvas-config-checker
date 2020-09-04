@@ -27,7 +27,8 @@ type CanvasDomain struct {
 	Production Domain
 }
 
-func (c *CheckerCanvas) GetCanvasConfigurationDomain() (*CanvasDomain, error) {
+// GetCanvasConfigDomain function for get configuration about domain from canvas
+func (c *CheckerCanvas) GetCanvasConfigDomain() (*CanvasDomain, error) {
 	m := message.New("Canvas")
 	m.Name = "domain file"
 	m.File = "domain.yml"
@@ -51,13 +52,15 @@ func (c *CheckerCanvas) GetCanvasConfigurationDomain() (*CanvasDomain, error) {
 	return &canvasDomain, nil
 }
 
+// RunDomain function for check configuration settings.yml about domain
 func (c *CheckerCanvas) RunDomain() (notEqual []checker.CheckerNotEqual, err error) {
-
-	canvasDomain, err := c.GetCanvasConfigurationDomain()
+	// Get Canvas Config about Domain
+	canvasDomain, err := c.GetCanvasConfigDomain()
 	if err != nil {
 		return nil, err
 	}
 
+	// Check Domain URL
 	m := message.New("Canvas")
 	m.Name = "domain:url"
 	m.Start()
@@ -68,6 +71,7 @@ func (c *CheckerCanvas) RunDomain() (notEqual []checker.CheckerNotEqual, err err
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: m.Name})
 	}
 
+	// Check Domain SSL
 	m.Name = "domain:ssl"
 	m.Start()
 	if c.CheckConfigEqual(strconv.FormatBool(c.Domain.SSL), strconv.FormatBool(canvasDomain.Production.SSL)) {
@@ -77,6 +81,7 @@ func (c *CheckerCanvas) RunDomain() (notEqual []checker.CheckerNotEqual, err err
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: m.Name})
 	}
 
+	// Check Domain Service UMM
 	m.Name = "domain:service_umm"
 	m.Start()
 	if c.CheckConfigEqual(c.Domain.ServiceUmm, canvasDomain.Production.ServiceUmm) {
@@ -86,6 +91,7 @@ func (c *CheckerCanvas) RunDomain() (notEqual []checker.CheckerNotEqual, err err
 		notEqual = append(notEqual, checker.CheckerNotEqual{Group: "Canvas", Name: m.Name})
 	}
 
+	// Check Domain Service UMM Secret Key
 	m.Name = "domain:service_umm_secret"
 	m.Start()
 	if c.CheckConfigEqual(c.Domain.ServiceUmmSecret, canvasDomain.Production.ServiceUmmSecret) {

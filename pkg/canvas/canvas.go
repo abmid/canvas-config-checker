@@ -23,7 +23,7 @@ type CheckerCanvas struct {
 // New initial method CheckerCanvas
 func New(viper *viper.Viper) *CheckerCanvas {
 	canvasPathConfig := path.Join(viper.GetString("canvas.path"), "config")
-
+	// Get config database from settings.yml
 	database := CheckerCanvasDB{
 		DBName:   viper.GetString("database.dbname"),
 		Host:     viper.GetString("database.host"),
@@ -32,6 +32,7 @@ func New(viper *viper.Viper) *CheckerCanvas {
 		Port:     viper.GetString("database.port"),
 	}
 
+	// Get config domain from settings.yml
 	domain := CheckerCanvasDomain{
 		Url:              viper.GetString("domain.url"),
 		SSL:              viper.GetBool("domain.ssl"),
@@ -39,15 +40,18 @@ func New(viper *viper.Viper) *CheckerCanvas {
 		ServiceUmmSecret: viper.GetString("domain.integration_secret"),
 	}
 
+	// Get config file_store from settings.yml
 	fs := CheckerCanvasFS{
 		Storage:    viper.GetString("filestore.storage"),
 		PathPrefix: viper.GetString("filestore.path_prefix"),
 	}
 
+	// Get config security from settings.yml
 	sec := CheckerCanvasSec{
 		EncryptionKey: viper.GetString("security.encryption_key"),
 	}
 
+	// get config cache from settings.yml
 	cache := CheckerCanvasCache{
 		Status:     viper.GetBool("cache_store.status"),
 		CacheStore: viper.GetString("cache_store.cache_store"),
@@ -75,7 +79,7 @@ func (c *CheckerCanvas) checkDir() (bool, error) {
 	return true, nil
 }
 
-// RunCanvas is function for Check Configuration Canvas
+// RunCanvas function for Check path configuration canvas is exists
 func (c *CheckerCanvas) RunCanvas() (notEqual []checker.CheckerNotEqual, err error) {
 	m := message.New("Canvas")
 	m.Name = "Path"
@@ -92,6 +96,7 @@ func (c *CheckerCanvas) RunCanvas() (notEqual []checker.CheckerNotEqual, err err
 	return notEqual, nil
 }
 
+// CheckConfigEqual function for check two value is equal or not
 func (c *CheckerCanvas) CheckConfigEqual(execpted, actual string) bool {
 
 	if execpted != actual {
@@ -101,6 +106,7 @@ func (c *CheckerCanvas) CheckConfigEqual(execpted, actual string) bool {
 	return true
 }
 
+// Run function for check all configuration about canvas
 func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []checker.GroupError, err error) {
 
 	canvas := New(viper)

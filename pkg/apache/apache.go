@@ -14,6 +14,7 @@ type CheckerApache struct {
 	VHostName       string
 }
 
+// New init apache checker
 func New(viper *viper.Viper) (*CheckerApache, error) {
 	var apachePath string
 
@@ -32,11 +33,17 @@ func New(viper *viper.Viper) (*CheckerApache, error) {
 
 }
 
+// RunVHost function for check name configuration virtual host apache
 func (c *CheckerApache) RunVHost() (notEquals []checker.CheckerNotEqual, err error) {
-
+	// ini message
 	m := message.New("Apache")
 	m.Name = "vhost_name"
-	m.Start()
+	m.Group = "Apache"
+	m.File = "Apache : Virtual Host"
+	// Start message
+	m.StartGroup()
+
+	// Read directory ensite apache
 	files, err := ioutil.ReadDir(c.ApacheVHostPath)
 	if err != nil {
 		m.StopFailure(err.Error())
@@ -45,12 +52,14 @@ func (c *CheckerApache) RunVHost() (notEquals []checker.CheckerNotEqual, err err
 
 	isExist := false
 
+	// Loop file in directory ensite apache and check file is exists or not
 	for _, f := range files {
 		if f.Name() == c.VHostName {
 			isExist = true
 		}
 	}
 
+	// If name vhost not found in ensite apache stop message not equal
 	if !isExist {
 		notEquals = append(notEquals, checker.CheckerNotEqual{
 			Group: "Apache",
@@ -65,6 +74,7 @@ func (c *CheckerApache) RunVHost() (notEquals []checker.CheckerNotEqual, err err
 	return notEquals, nil
 }
 
+//Run function to check all configuration about apache
 func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []checker.GroupError, err error) {
 
 	apache, err := New(viper)
@@ -72,6 +82,7 @@ func Run(viper *viper.Viper) (notEqual []checker.CheckerNotEqual, groupError []c
 		return notEqual, groupError, err
 	}
 
+	// Run virtual host
 	isEqual, err := apache.RunVHost()
 	if err != nil {
 		groupError = append(groupError, checker.GroupError{Group: "apache", Message: err.Error()})

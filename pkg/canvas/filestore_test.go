@@ -15,14 +15,18 @@ func (suite *CanvasTestSuite) TestGetCanvasFSConfig() {
 }
 
 func (suite *CanvasTestSuite) TestRunFS() {
-	viper := viper.New()
-	viper.SetConfigType("yaml")
-	viper.Set("canvas.path", suite.CanvasPath)
-	viper.Set("filestore.storage", "local")
-	viper.Set("filestore.path_prefix", "tmp/files")
 
-	cCanvas := New(viper)
-	notEquals, err := cCanvas.RunFS()
-	suite.NoError(err)
-	suite.Nil(notEquals)
+	suite.Run("equal", func() {
+
+		viper := viper.New()
+		viper.SetConfigType("yaml")
+		viper.Set("canvas.path", suite.CanvasPath)
+		viper.Set("filestore.storage", "local")
+		viper.Set("filestore.path_prefix", "tmp/files")
+
+		cCanvas := New(viper)
+		notEquals, err := cCanvas.RunFS()
+		suite.NoError(err)
+		suite.Nil(notEquals)
+	})
 }

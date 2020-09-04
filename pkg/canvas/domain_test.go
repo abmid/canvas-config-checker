@@ -15,16 +15,19 @@ func (suite *CanvasTestSuite) TestGetCanvasConfigurationDomain() {
 }
 
 func (suite *CanvasTestSuite) TestRunDomain() {
-	viper := viper.New()
-	viper.SetConfigType("yaml")
-	viper.Set("canvas.path", suite.CanvasPath)
-	viper.Set("domain.url", "canvas.example.com")
-	viper.Set("domain.ssl", true)
-	viper.Set("domain.service_umm", "integration.local")
-	viper.Set("domain.service_umm_secret", "integration.secret")
 
-	cCanvas := New(viper)
-	notEquals, err := cCanvas.RunDomain()
-	suite.NoError(err)
-	suite.Nil(notEquals)
+	suite.Run("equal", func() {
+		viper := viper.New()
+		viper.SetConfigType("yaml")
+		viper.Set("canvas.path", suite.CanvasPath)
+		viper.Set("domain.url", "canvas.example.com")
+		viper.Set("domain.ssl", true)
+		viper.Set("domain.service_umm", "integration.local")
+		viper.Set("domain.service_umm_secret", "integration.secret")
+
+		cCanvas := New(viper)
+		notEquals, err := cCanvas.RunDomain()
+		suite.NoError(err)
+		suite.Nil(notEquals)
+	})
 }

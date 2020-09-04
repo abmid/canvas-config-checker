@@ -25,12 +25,14 @@ type CanvasCacheConfig struct {
 	Production  CanvasCache
 }
 
+// GetCanvasCache function to get configuration from canvas project
 func (c *CheckerCanvas) GetCanvasCacheConfig() (*CanvasCacheConfig, error) {
 	m := message.New("Canvas")
 	m.Name = "redis file"
 	m.File = "cache.yml"
 	m.StartGroup()
-	contentDB, err := ioutil.ReadFile(c.CanvasPathConfig + "/cache.yml")
+	// Read configuration from canvas
+	contentDB, err := ioutil.ReadFile(c.CanvasPathConfig + "/cache_store.yml")
 	if err != nil {
 		m.StopFailureNotExists()
 		return nil, err
@@ -49,6 +51,7 @@ func (c *CheckerCanvas) GetCanvasCacheConfig() (*CanvasCacheConfig, error) {
 	return &cacheCanvasConf, nil
 }
 
+// RunCache function for check configuration is equal about cache_store
 func (c *CheckerCanvas) RunCache() (notEqual []checker.CheckerNotEqual, err error) {
 
 	// if config not set cache
@@ -67,6 +70,7 @@ func (c *CheckerCanvas) RunCache() (notEqual []checker.CheckerNotEqual, err erro
 
 	m.Name = "cache_store:cache_store"
 	m.Start()
+	// Check config cache_store from settings.yml and canvas config cache store
 	if c.CheckConfigEqual(c.Cache.CacheStore, cacheCanvasConf.Production.CacheStore) {
 		m.StopSuccess()
 	} else {

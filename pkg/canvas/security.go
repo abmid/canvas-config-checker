@@ -21,12 +21,12 @@ type CanvasSecConfig struct {
 	Production  CanvasSec
 }
 
-// GetCanvasConfig is function to get configuration database from Canvas
+// GetCanvasConfig is function to get configuration security from Canvas
 func (c *CheckerCanvas) GetCanvasSecConfig() (*CanvasSecConfig, error) {
 
 	m := message.New("Canvas")
-	m.Name = "file store file"
-	m.File = "file_store.yml"
+	m.Name = "security file"
+	m.File = "security.yml"
 	m.StartGroup()
 	contentDB, err := ioutil.ReadFile(c.CanvasPathConfig + "/security.yml")
 	if err != nil {
@@ -47,6 +47,7 @@ func (c *CheckerCanvas) GetCanvasSecConfig() (*CanvasSecConfig, error) {
 	return &secCanvasConfig, nil
 }
 
+// RunSec function for check config between Security(settings.yml) and canvas sec
 func (c *CheckerCanvas) RunSec() (notEqual []checker.CheckerNotEqual, err error) {
 
 	secCanvasConfig, err := c.GetCanvasSecConfig()
