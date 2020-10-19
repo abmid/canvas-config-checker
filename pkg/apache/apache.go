@@ -22,7 +22,7 @@ func New(viper *viper.Viper) (*CheckerApache, error) {
 	case "test":
 		apachePath = viper.GetString("apache.path")
 	case "ubuntu":
-		apachePath = "/etc/apache2/site-enabled"
+		apachePath = "/etc/apache2/sites-enabled"
 	}
 
 	return &CheckerApache{

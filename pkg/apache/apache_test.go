@@ -33,7 +33,7 @@ func (suite *ApacheTestSuite) SetupTest() {
 	root := RootDir()
 	suite.OS = "test"
 	suite.VHostName = "canvas-prod.conf"
-	suite.ApacheVHostPath = path.Join(root, "../test/apache/site-enabled")
+	suite.ApacheVHostPath = path.Join(root, "../test/apache/sites-enabled")
 }
 
 func (suite *ApacheTestSuite) TestNew() {
