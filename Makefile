@@ -8,7 +8,7 @@ app:
 	go build -o dist/${BINARY} main.go
 	cp settings.yml dist/settings.yml
 
-unittest:
+test-short:
 	go test -short  ./...
 
 .PHONY: all test clean
